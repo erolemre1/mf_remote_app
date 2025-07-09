@@ -95,7 +95,7 @@ module.exports = {
       config.plugins.push(
         new NextFederationPlugin({
           name: 'remote_app',
-          filename: 'static/chunks/remoteEntry.js',
+          filename: 'public/client.bundle.js',
           exposes: {
             './RemoteComponent': './src/components/RemoteComponent',
             './RemoteFullApp': './src/pages/index.jsx',
