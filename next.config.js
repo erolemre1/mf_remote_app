@@ -1,24 +1,24 @@
-const { NextFederationPlugin } = require('@module-federation/nextjs-mf');
+// const { NextFederationPlugin } = require('@module-federation/nextjs-mf');
 
-module.exports = {
-  webpack(config) {
-    config.plugins.push(
-      new NextFederationPlugin({
-        name: 'remote_app',
-        filename: 'static/chunks/remoteEntry.js',
-        exposes: {
-          './RemoteComponent': './src/components/RemoteComponent',
-          './RemoteFullApp': './src/pages/index.jsx',
-        },
-        shared: {
-          react: { singleton: true },
-          'react-dom': { singleton: true },
-        },
-      })
-    );
-    return config;
-  },
-};
+// module.exports = {
+//   webpack(config) {
+//     config.plugins.push(
+//       new NextFederationPlugin({
+//         name: 'remote_app',
+//         filename: 'static/chunks/remoteEntry.js',
+//         exposes: {
+//           './RemoteComponent': './src/components/RemoteComponent',
+//           './RemoteFullApp': './src/pages/index.jsx',
+//         },
+//         shared: {
+//           react: { singleton: true },
+//           'react-dom': { singleton: true },
+//         },
+//       })
+//     );
+//     return config;
+//   },
+// };
 
 
 // const { NextFederationPlugin } = require('@module-federation/nextjs-mf');
@@ -77,3 +77,37 @@ module.exports = {
 //     ],
 //   },
 // };
+
+
+
+
+//// render bundle webpack try 
+
+const { NextFederationPlugin } = require('@module-federation/nextjs-mf');
+const deps = require('./package.json').dependencies;
+
+module.exports = {
+  reactStrictMode: true,
+  webpack(config, options) {
+    const isServer = options.isServer;
+
+    if (!isServer) {
+      config.plugins.push(
+        new NextFederationPlugin({
+          name: 'remote_app',
+          filename: 'static/chunks/remoteEntry.js',
+          exposes: {
+            './RemoteComponent': './src/components/RemoteComponent',
+            './RemoteFullApp': './src/pages/index.jsx',
+          },
+          shared: {
+            react: { singleton: true, eager: true, requiredVersion: deps.react },
+            'react-dom': { singleton: true, eager: true, requiredVersion: deps['react-dom'] },
+          },
+        })
+      );
+    }
+
+    return config;
+  },
+};
