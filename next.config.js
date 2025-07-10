@@ -82,12 +82,24 @@
 
 
 //// render bundle webpack try 
-
 const { NextFederationPlugin } = require('@module-federation/nextjs-mf');
 const deps = require('./package.json').dependencies;
 
 module.exports = {
   reactStrictMode: true,
+  async headers() {
+    return [
+      {
+        source: '/_next/static/:path*',
+        headers: [
+          { key: 'Access-Control-Allow-Origin', value: '*' },
+          // İstersen başka headerlar da ekleyebilirsin:
+          // { key: 'Access-Control-Allow-Methods', value: 'GET,OPTIONS' },
+          // { key: 'Access-Control-Allow-Headers', value: 'X-Requested-With, Content-Type, Accept' },
+        ],
+      },
+    ];
+  },
   webpack(config, options) {
     const isServer = options.isServer;
 
@@ -106,7 +118,7 @@ module.exports = {
             'react-dom': { singleton: true, eager: true, requiredVersion: deps['react-dom'] },
           },
           extraOptions: {
-            publicPath: 'https://mf-remote-app.onrender.com/_next/', // Önemli!
+            publicPath: 'https://mf-remote-app.onrender.com/_next/',
           },
         })
       );
