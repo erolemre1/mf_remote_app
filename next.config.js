@@ -106,7 +106,7 @@ module.exports = {
             'react-dom': { singleton: true, eager: true, requiredVersion: deps['react-dom'] },
           },
           extraOptions: {
-            publicPath: 'https://mf-host-app.onrender.com/_next/',
+            publicPath: 'https://mf-remote-app.onrender.com/_next/', // Önemli!
           },
         })
       );
