@@ -9,6 +9,7 @@ module.exports = {
     port: process.env.PORT || 3001,
     static: path.join(__dirname, 'dist'),
     historyApiFallback: true,
+    allowedHosts: 'all', 
   },
   output: {
     publicPath: 'auto',
