@@ -6,7 +6,7 @@ module.exports = {
   entry: './src/index.js',
   mode: 'development',
   devServer: {
-    port: 3001,
+    port: process.env.PORT || 3001,
     static: path.join(__dirname, 'dist'),
     historyApiFallback: true,
   },
