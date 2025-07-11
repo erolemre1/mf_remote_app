@@ -5,7 +5,6 @@ import Widget from './Widget.jsx';
 
 const App = () => (
   <div>
-    <h1>Remote App Ana Sayfa</h1>
     <Widget />
   </div>
 );

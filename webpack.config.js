@@ -9,7 +9,7 @@ module.exports = {
     port: process.env.PORT || 3001,
     static: path.join(__dirname, 'dist'),
     historyApiFallback: true,
-    allowedHosts: 'all', 
+    allowedHosts: 'all',
   },
   output: {
     publicPath: 'auto',
@@ -21,7 +21,29 @@ module.exports = {
         exclude: /node_modules/,
         loader: 'babel-loader',
       },
+      // CSS Modules için *.module.css dosyaları
+      {
+        test: /\.module\.css$/i,
+        use: [
+          'style-loader',
+          {
+            loader: 'css-loader',
+            options: {
+              modules: true,  // burada CSS Modules aktif ediliyor
+            },
+          },
+        ],
+      },
+      // Diğer normal css dosyaları için
+      {
+        test: /\.css$/i,
+        exclude: /\.module\.css$/i,
+        use: ['style-loader', 'css-loader'],
+      },
     ],
+  },
+  resolve: {
+    extensions: ['.js', '.jsx', '.css'],
   },
   plugins: [
     new ModuleFederationPlugin({
