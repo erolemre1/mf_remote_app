@@ -1,25 +1,41 @@
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const ModuleFederationPlugin = require('webpack').container.ModuleFederationPlugin;
 const path = require('path');
 
 module.exports = {
+  entry: './src/index.js',
   mode: 'development',
-  entry: './client.js',
-  output: {
-    filename: 'client.bundle.js',
-    path: path.resolve(__dirname, 'public'),
+  devServer: {
+    port: 3001,
+    static: path.join(__dirname, 'dist'),
+    historyApiFallback: true,
   },
-  resolve: {
-    extensions: ['.js', '.jsx'],
+  output: {
+    publicPath: 'auto',
   },
   module: {
-    rules: [{
-      test: /\.jsx?$/,
-      exclude: /node_modules/,
-      use: {
+    rules: [
+      {
+        test: /\.jsx?$/,
+        exclude: /node_modules/,
         loader: 'babel-loader',
-        options: {
-          presets: ['@babel/preset-react', '@babel/preset-env']
-        }
-      }
-    }],
+      },
+    ],
   },
+  plugins: [
+    new ModuleFederationPlugin({
+      name: 'remote',
+      filename: 'remoteEntry.js',
+      exposes: {
+        './Widget': './src/Widget.jsx',
+      },
+      shared: {
+        react: { singleton: true, eager: true, requiredVersion: '^18.2.0' },
+        'react-dom': { singleton: true, eager: true, requiredVersion: '^18.2.0' },
+      },
+    }),
+    new HtmlWebpackPlugin({
+      template: './public/index.html',
+    }),
+  ],
 };

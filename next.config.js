@@ -1,128 +1,23 @@
-// const { NextFederationPlugin } = require('@module-federation/nextjs-mf');
-
-// module.exports = {
-//   webpack(config) {
-//     config.plugins.push(
-//       new NextFederationPlugin({
-//         name: 'remote_app',
-//         filename: 'static/chunks/remoteEntry.js',
-//         exposes: {
-//           './RemoteComponent': './src/components/RemoteComponent',
-//           './RemoteFullApp': './src/pages/index.jsx',
-//         },
-//         shared: {
-//           react: { singleton: true },
-//           'react-dom': { singleton: true },
-//         },
-//       })
-//     );
-//     return config;
-//   },
-// };
-
-
-// const { NextFederationPlugin } = require('@module-federation/nextjs-mf');
-
-// module.exports = {
-//   reactStrictMode: true,
-//   webpack(config, options) {
-//     config.plugins.push(
-//       new NextFederationPlugin({
-//         name: 'remoteApp',
-//         filename: 'static/chunks/remoteEntry.js',
-//         exposes: {
-//           './RemoteComponent': './src/components/RemoteComponent',
-//         },
-//         shared: {
-//           react: { singleton: true, requiredVersion: false },
-//           'react-dom': { singleton: true, requiredVersion: false },
-//         },
-//       })
-//     );
-//     return config;
-//   },
-// };
-
-
-
-
-
-
-
-
-
-
-
-/// bundle cıkartma remote
-
-// const path = require('path');
-
-// module.exports = {
-//   mode: 'development',
-//   entry: './client.js',
-//   output: {
-//     path: path.resolve(__dirname, 'public'),
-//     filename: 'client.bundle.js',
-//   },
-//   resolve: {
-//     extensions: ['.js', '.jsx'],
-//   },
-//   module: {
-//     rules: [
-//       {
-//         test: /\.jsx?$/,
-//         exclude: /node_modules/,
-//         use: 'babel-loader',
-//       },
-//     ],
-//   },
-// };
-
-
-
-
-//// render bundle webpack try 
 const { NextFederationPlugin } = require('@module-federation/nextjs-mf');
-const deps = require('./package.json').dependencies;
 
 module.exports = {
   reactStrictMode: true,
-  async headers() {
-    return [
-      {
-        source: '/_next/static/:path*',
-        headers: [
-          { key: 'Access-Control-Allow-Origin', value: '*' },
-          // İstersen başka headerlar da ekleyebilirsin:
-          // { key: 'Access-Control-Allow-Methods', value: 'GET,OPTIONS' },
-          // { key: 'Access-Control-Allow-Headers', value: 'X-Requested-With, Content-Type, Accept' },
-        ],
-      },
-    ];
-  },
-  webpack(config, options) {
-    const isServer = options.isServer;
+  webpack(config) {
+    config.output.publicPath = 'http://localhost:3001/_next/';
 
-    if (!isServer) {
-      config.plugins.push(
-        new NextFederationPlugin({
-          name: 'remote_app',
-          filename: 'static/chunks/remoteEntry.js',
-          library: { type: 'var', name: 'remote_app' },
-          exposes: {
-            './RemoteComponent': './src/components/RemoteComponent',
-            './RemoteFullApp': './src/pages/index.jsx',
-          },
-          shared: {
-            react: { singleton: true, eager: true, requiredVersion: deps.react },
-            'react-dom': { singleton: true, eager: true, requiredVersion: deps['react-dom'] },
-          },
-          extraOptions: {
-            publicPath: 'https://mf-remote-app.onrender.com/_next/',
-          },
-        })
-      );
-    }
+    config.plugins.push(
+      new NextFederationPlugin({
+        name: 'remote_app',
+        filename: 'static/chunks/remoteEntry.js',
+        exposes: {
+          './RemoteFullApp': './src/components/RemoteComponent',
+        },
+        shared: {
+          react: { singleton: true, eager: true, requiredVersion: false },
+          'react-dom': { singleton: true, eager: true, requiredVersion: false },
+        },
+      })
+    );
 
     return config;
   },
