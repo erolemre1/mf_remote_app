@@ -21,20 +21,21 @@ module.exports = {
         exclude: /node_modules/,
         loader: 'babel-loader',
       },
-      // CSS Modules için *.module.css dosyaları
       {
-        test: /\.module\.css$/i,
-        use: [
-          'style-loader',
-          {
-            loader: 'css-loader',
-            options: {
-              modules: true,  // burada CSS Modules aktif ediliyor
-            },
-          },
-        ],
+  test: /\.module\.css$/i,
+  use: [
+    'style-loader',
+    {
+      loader: 'css-loader',
+      options: {
+        modules: {
+          localIdentName: '[name]__[local]___[hash:base64:5]',
+        },
       },
-      // Diğer normal css dosyaları için
+    },
+  ],
+},
+
       {
         test: /\.css$/i,
         exclude: /\.module\.css$/i,
@@ -51,6 +52,7 @@ module.exports = {
       filename: 'remoteEntry.js',
       exposes: {
         './Widget': './src/Widget.jsx',
+        './Footer': './src/components/Footer.jsx',
       },
       shared: {
         react: { singleton: true, eager: true, requiredVersion: '^18.2.0' },
